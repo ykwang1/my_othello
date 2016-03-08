@@ -178,3 +178,25 @@ void Board::setBoard(char data[]) {
         }
     }
 }
+
+/**
+* @brief Given a move, this function calculates the resulting score
+*/
+int Board::scoreMove(Move *m, Side side)
+{
+    if(!checkMove(m,side))
+    {
+        return -1000; //Value indicating invalid move
+    }
+    Board *testBoard = this->copy();
+    testBoard->doMove(m, side);
+    int blackCount = testBoard->countBlack(); //Not including weights yet
+    int whiteCount = testBoard->countWhite();
+    delete testBoard;
+
+    if(side == WHITE)
+    {   
+        return whiteCount - blackCount;
+    }
+    return blackCount - whiteCount;
+}

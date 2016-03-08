@@ -44,6 +44,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * process the opponent's opponents move before calculating your own move
      */ 
     //Process the opponents move
+    int moveScore = 0;
+    int maxScore = -50; //Ensures a valid move is made even if only move is bad
     if(playing == WHITE)
     {
         gameBoard->doMove(opponentsMove, BLACK);
@@ -58,20 +60,34 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     {
         //Let's just return a random move. Iterate through the board and return
         //the first valid move
+        Move *testMove = new Move(0,0);
         Move *nextMove = new Move(0,0);
         for(int i = 0; i < 8; i++)
         {
             for(int j = 0; j < 8; j++)
             {
-                nextMove->setX(i);
-                nextMove->setY(j);
-                if(gameBoard->checkMove(nextMove, playing))
+                testMove->setX(i);
+                testMove->setY(j);
+                if(gameBoard->checkMove(testMove, playing))
                 {
-                    gameBoard->doMove(nextMove, playing);
-                    return nextMove;
+                    moveScore = gameBoard->scoreMove(testMove, playing);
+                            cerr << "Move Score was: " << moveScore << " at (" << testMove->getX() <<
+            " , " << testMove->getY() << ")" <<endl;
+                    if(moveScore > maxScore)
+                    {
+                        nextMove->setX(testMove->getX());
+                        nextMove->setY(testMove->getY());
+                        maxScore = moveScore;
+                    }
                 }
+
             }
         }
+        delete testMove;
+        gameBoard->doMove(nextMove, playing);
+        cerr << "Max Score was: " << maxScore << " at (" << nextMove->getX() <<
+            " , " << nextMove->getY() << ")" <<endl;
+        return nextMove;
 
     }
     return NULL;

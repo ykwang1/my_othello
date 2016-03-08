@@ -10,6 +10,15 @@ class Board {
 private:
     bitset<64> black;
     bitset<64> taken;    
+
+    // int weights[8][8] = {15, 10, 5, 5, 5, 5, 10, 15, 
+    //                      10, -5, 1, 1, 1, 1, -5, 10, 
+    //                      5,   1, 1, 1, 1, 1,  1, 5,
+    //                      5,   1, 1, 1, 1, 1,  1, 5,
+    //                      5,   1, 1, 1, 1, 1,  1, 5,
+    //                      5,   1, 1, 1, 1, 1,  1, 5,
+    //                      10, -5, 1, 1, 1, 1, -5, 10,
+    //                      15, 10, 5, 5, 5, 5, 10, 15};
        
     bool occupied(int x, int y);
     bool get(Side side, int x, int y);
@@ -28,6 +37,7 @@ public:
     int count(Side side);
     int countBlack();
     int countWhite();
+    int scoreMove(Move *m, Side side);
 
     void setBoard(char data[]);
 };
