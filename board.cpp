@@ -180,19 +180,56 @@ void Board::setBoard(char data[]) {
     }
 }
 
+vector<Move> Board::possible(Side playing)
+{
+	vector<Move> possibleMoves;
+	Move testMove = Move(0, 0);
+	for (int i=0; i < 8; i++)
+	{
+		for (int j=0; j < 8; j++)
+		{
+			testMove.setX(i);
+			testMove.setY(j);
+			if (this->checkMove(&testMove, playing))
+			{
+				possibleMoves.push_back(testMove);
+				//cerr << "Valid move at (" << testMove.getX() <<
+				//  " , " << testMove.getY() << ")" <<endl;
+			}
+		}
+	}
+	return possibleMoves;
+}
+
 /**
 * @brief Given a move, this function calculates the resulting score
 */
-int Board::scoreMove(Move *m, Side side)
+int Board::scoreMove(Move *m, Side side, bool test)
 {
-    if(!checkMove(m,side))
+    if(!checkMove(m,side) && !test)
     {
         return -1000; //Value indicating invalid move
     }
     Board *testBoard = this->copy();
-    testBoard->doMove(m, side);
+    if (test) 
+    {
+		if (side == WHITE)
+		{
+			testBoard->doMove(m, BLACK);
+		}
+		else
+		{
+			testBoard->doMove(m, WHITE);
+		}
+	}
+    else
+    {
+		testBoard->doMove(m, side);
+	}
     int blackCount = testBoard->countWithWeights(BLACK);
     int whiteCount = testBoard->countWithWeights(WHITE);
+    //int blackCount = testBoard->countBlack();
+    //int whiteCount = testBoard->countWhite();
     delete testBoard;
 
     if(side == WHITE)
