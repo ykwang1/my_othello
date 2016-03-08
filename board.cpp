@@ -1,4 +1,5 @@
 #include "board.h"
+#include <iostream>
 
 /*
  * Make a standard 8x8 othello board and initialize it to the standard setup.
@@ -190,8 +191,8 @@ int Board::scoreMove(Move *m, Side side)
     }
     Board *testBoard = this->copy();
     testBoard->doMove(m, side);
-    int blackCount = testBoard->countBlack(); //Not including weights yet
-    int whiteCount = testBoard->countWhite();
+    int blackCount = testBoard->countWithWeights(BLACK);
+    int whiteCount = testBoard->countWithWeights(WHITE);
     delete testBoard;
 
     if(side == WHITE)
@@ -199,4 +200,23 @@ int Board::scoreMove(Move *m, Side side)
         return whiteCount - blackCount;
     }
     return blackCount - whiteCount;
+}
+
+/**
+* @brief Returns a count of the pieces, multiplying by weights
+*/
+int Board::countWithWeights(Side side)
+{
+    int score = 0;
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            if(this->get(side, i, j))
+            {
+                score += weights[i][j];
+            }
+        }
+    }
+    return score;
 }
